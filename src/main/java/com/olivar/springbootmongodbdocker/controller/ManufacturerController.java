@@ -1,6 +1,5 @@
 package com.olivar.springbootmongodbdocker.controller;
 
-import com.olivar.springbootmongodbdocker.dao.ManufacturerRepo;
 import com.olivar.springbootmongodbdocker.model.Manufacturer;
 import com.olivar.springbootmongodbdocker.service.ManufacturerService;
 
@@ -14,15 +13,15 @@ import java.util.List;
 public class ManufacturerController {
 
     @Autowired
-    private ManufacturerService repository;
+    private ManufacturerService service;
 
     @PostMapping
     public Manufacturer saveManucfacturer(@RequestBody Manufacturer manufacturer){
-        return repository.saveManufacturer(manufacturer);
+        return service.saveManufacturer(manufacturer);
     }
 
     @GetMapping
     public List<Manufacturer> getManufacturer(){
-        return repository.getAllManufacturer();
+        return service.getAllManufacturer();
     }
 }

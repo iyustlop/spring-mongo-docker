@@ -9,10 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "manufacturers")
+@Document(collection = "manufacturer")
 public class Manufacturer {
-    @Id
-    private int id;
     private String name;
     private String code;
 }

@@ -5,7 +5,7 @@ services:
     container_name: "olivarmongo"
     ports:
     - 27017:27017
-  sprint-mongo-demo:
+  spring-mongo-demo:
     image: springboot-mongodb:1.0.0
     container_name: "springboot-mongodb"
     ports:

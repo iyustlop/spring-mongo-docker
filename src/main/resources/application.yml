@@ -3,5 +3,14 @@ spring:
     mongodb:
       uri: mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DATABASE}.rl9sfm1.mongodb.net/?retryWrites=true&w=majority
       database: elolivar
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 server:
-  port: 8080
+  port: 8070

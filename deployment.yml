@@ -1,0 +1,28 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spring-demo
+  labels:
+    purpose: spring-demo-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-demo-k8s
+  template:
+    metadata:
+      labels:
+        app: spring-demo-k8s
+    spec:
+      containers:
+      - image: iyustlop/spring-mongo-demo
+        name: spring-demo-k8s
+        ports:
+          - containerPort: 8080
+        env:
+          - name: MONGODB_USER
+            value: ${MONGODB_USER}
+          - name: MONGODB_PASSWORD
+            value: ${MONGODB_PASSWORD}
+          - name: MONGODB_DATABASE
+            value: ${MONGODB_DATABASE}

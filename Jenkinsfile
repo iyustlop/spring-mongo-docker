@@ -24,7 +24,7 @@ pipeline {
                         sh 'docker login -u iyustlop -p ${dockerHubPwd}'
                     }
                     
-                    sh 'docker push iyustlop/spring-mongo-demo:0.0.1'
+                    sh 'docker push iyustlop/spring-mongo-demo'
                 }
             }
         }

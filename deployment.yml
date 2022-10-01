@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spring-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: spring-demo
+  template:
+    metadata:
+      labels:
+        role: spring-demo
+    spec:
+      containers:
+      - name: spring-demo
+        image: iyustlop/spring-mongo-demo
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: env-variables
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-demo-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    role: spring-demo

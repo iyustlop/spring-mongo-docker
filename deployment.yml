@@ -2,21 +2,19 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: spring-demo
-  labels:
-    purpose: spring-demo-k8s
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spring-demo-k8s
+      role: spring-demo
   template:
     metadata:
       labels:
-        app: spring-demo-k8s
+        role: spring-demo
     spec:
       containers:
-      - image: iyustlop/spring-mongo-demo
-        name: spring-demo-k8s
+      - name: spring-demo
+        image: iyustlop/spring-mongo-demo
         ports:
           - containerPort: 8080
         envFrom:
@@ -27,10 +25,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-demo-k8s
+  name: spring-demo-service
 spec:
+  type: LoadBalancer
   ports:
     - port: 8080
       targetPort: 8080
   selector:
-    app: spring-demo-k8s
+    role: spring-demo

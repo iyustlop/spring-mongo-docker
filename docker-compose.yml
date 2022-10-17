@@ -36,10 +36,10 @@ services:
       - grafana-data:/var/lib/grafana
 
   spring-mongo-demo:
-    image: iyustlop/spring-mongo-demo
+    image: iyustlop/spring-mongo-demo:0.0.1
     container_name: "springboot-mongodb"
     ports:
-    - 8080:8080
+    - 8090:8080
     environment:
       - MONGODB_USER=${MONGODB_USER}
       - MONGODB_PASSWORD=${MONGODB_PASSWORD}

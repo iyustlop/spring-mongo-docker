@@ -13,7 +13,7 @@ pipeline {
         stage("Build Docker image"){
             steps{
                 script{
-                    sh 'docker build -t iyustlop/spring-mongo-demo .'
+                    sh 'docker build -t iyustlop/spring-mongo-demo:0.0.1 .'
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
                         sh 'docker login -u iyustlop -p ${dockerHubPwd}'
                     }
                     
-                    sh 'docker push iyustlop/spring-mongo-demo'
+                    sh 'docker push iyustlop/spring-mongo-demo:0.0.1'
                 }
             }
         }

@@ -3,6 +3,13 @@ spring:
     mongodb:
       uri: mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DATABASE}.rl9sfm1.mongodb.net/?retryWrites=true&w=majority
       database: elolivar
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        credential:
+          client-id: f8589941-e063-4a59-a62f-58742f3d8c5c
+        app-id-uri: api://f8589941-e063-4a59-a62f-58742f3d8c5c/spring-mongo-docker-ambito
 management:
   endpoint:
     health:

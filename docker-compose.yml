@@ -5,10 +5,17 @@ networks:
     driver: bridge
 
 volumes:
+  mongodb: {}
   prometheus_data: {}
   grafana-data: {}
 
 services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/db
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -35,14 +42,14 @@ services:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - grafana-data:/var/lib/grafana
 
-  spring-mongo-demo:
-    image: iyustlop/spring-mongo-demo:0.0.1
-    container_name: "springboot-mongodb"
-    ports:
-    - 8090:8080
-    environment:
-      - MONGODB_USER=${MONGODB_USER}
-      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
-      - MONGODB_DATABASE=${MONGODB_DATABASE}
-    links:
-      - prometheus
+#  spring-mongo-demo:
+#    image: iyustlop/spring-mongo-demo:0.0.1
+#    container_name: "springboot-mongodb"
+#    ports:
+#    - 8090:8080
+#    environment:
+#      - MONGODB_USER=${MONGODB_USER}
+#      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+#      - MONGODB_DATABASE=${MONGODB_DATABASE}
+#    links:
+#      - prometheus

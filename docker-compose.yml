@@ -15,13 +15,14 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - mongodb:/data/db
+      - ./mongodb:/data/db
   prometheus:
     image: prom/prometheus:latest
+    user: 1000:1000
     container_name: prometheus
     volumes:
       - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
+      - ./prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'

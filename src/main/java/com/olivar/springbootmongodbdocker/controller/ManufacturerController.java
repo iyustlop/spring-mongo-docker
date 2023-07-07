@@ -16,12 +16,22 @@ public class ManufacturerController {
     private ManufacturerService service;
 
     @PostMapping
-    public Manufacturer saveManucfacturer(@RequestBody Manufacturer manufacturer){
+    public Manufacturer saveManufacturer(@RequestBody Manufacturer manufacturer){
         return service.saveManufacturer(manufacturer);
     }
 
     @GetMapping
     public List<Manufacturer> getManufacturer(){
         return service.getAllManufacturer();
+    }
+
+    @GetMapping(value = "/{code}")
+    public Manufacturer getManufacturer(@PathVariable("code") String code){
+        return service.getManufacturer(code);
+    }
+
+    @PutMapping(value = "/{id}")
+    public Manufacturer updateMenufacturer(@PathVariable("id") String id,@RequestBody Manufacturer manufacturer){
+        return service.updateManufacturer(id, manufacturer);
     }
 }

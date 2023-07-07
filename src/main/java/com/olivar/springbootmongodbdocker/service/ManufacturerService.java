@@ -21,4 +21,15 @@ public class ManufacturerService {
     public List<Manufacturer> getAllManufacturer(){
         return repository.findAll();
     }
+
+    public Manufacturer getManufacturer(String code){
+        return repository.findByCode(code);
+    }
+
+    public Manufacturer updateManufacturer(String id, Manufacturer manufacturer) {
+        Manufacturer manufacturer1 = repository.findById(id).get();
+        manufacturer1.setCode(manufacturer.getCode());
+        manufacturer1.setName(manufacturer.getName());
+        return repository.save(manufacturer1);
+    }
 }

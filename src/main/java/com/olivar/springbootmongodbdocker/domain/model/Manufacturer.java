@@ -1,4 +1,4 @@
-package com.olivar.springbootmongodbdocker.model;
+package com.olivar.springbootmongodbdocker.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

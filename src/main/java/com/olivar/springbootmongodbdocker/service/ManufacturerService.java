@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.olivar.springbootmongodbdocker.dao.ManufacturerRepo;
-import com.olivar.springbootmongodbdocker.model.Manufacturer;
+import com.olivar.springbootmongodbdocker.domain.model.Manufacturer;
 
 @Service
 public class ManufacturerService {

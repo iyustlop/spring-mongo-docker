@@ -21,6 +21,7 @@ public class ManufacturerController {
     }
 
     @GetMapping
+    @CrossOrigin(origins = "http://localhost:4200")
     public List<Manufacturer> getManufacturer(){
         return service.getAllManufacturer();
     }

@@ -16,15 +16,11 @@ public class ManufacturerController {
 
     @Autowired
     private ManufacturerService service;
-    @Autowired
-    private ManufacturerResponseMapper manufacturerResponseMapper;
 
     @PostMapping
-    public ResponseEntity<ManufacturerResponse> saveManucfacturer(@RequestBody Manufacturer manufacturer){
+    public ResponseEntity<Manufacturer> saveManufacturer(@RequestBody Manufacturer manufacturer){
         return ResponseEntity.ok(
-            manufacturerResponseMapper.manufacturerToManufacturerResponse(
                 service.saveManufacturer(manufacturer)
-            )
         );
     }
 

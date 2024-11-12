@@ -1,12 +1,11 @@
 package com.olivar.springbootmongodbdocker.service;
 
-import java.util.List;
-
+import com.olivar.springbootmongodbdocker.dao.ManufacturerRepo;
+import com.olivar.springbootmongodbdocker.domain.model.Manufacturer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.olivar.springbootmongodbdocker.dao.ManufacturerRepo;
-import com.olivar.springbootmongodbdocker.model.Manufacturer;
+import java.util.List;
 
 @Service
 public class ManufacturerService {

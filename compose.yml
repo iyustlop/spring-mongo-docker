@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: DockerfileDev
+    volumes:
+      # Mount the project root to the workspace in the container
+      - ..:/workspace:cached
+      # Persist maven repository to speed up subsequent builds
+      - maven-repo:/home/vscode/.m2
+
+    # Keep the container running
+    command: sleep infinity
+
+    # Depend on mongodb
+    depends_on:
+      - mongodb
+    
+    # Expose ports for the app and debugging
+    ports:
+      - "8080:8080" # Spring Boot app
+      - "5005:5005" # Java debug
+
+    # Set environment variables for the application to connect to mongo
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/testdb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  maven-repo:
+  mongodb-data:
+

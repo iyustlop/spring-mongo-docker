@@ -1,8 +1,6 @@
 package com.olivar.springbootmongodbdocker.infrastructure.inboud.rest.core;
 
 import com.olivar.springbootmongodbdocker.domain.model.Manufacturer;
-import com.olivar.springbootmongodbdocker.infrastructure.inboud.rest.core.dto.ManufacturerResponse;
-import com.olivar.springbootmongodbdocker.infrastructure.inboud.rest.core.mapper.ManufacturerResponseMapper;
 import com.olivar.springbootmongodbdocker.service.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

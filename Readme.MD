@@ -6,7 +6,7 @@ MONGODB_DATABASE
 
 ## Ejemplos de llamadas a la API de Manufacturer
 
-curl http://localhost:8080/manufacturer
+curl http://localhost:8090/manufacturer
 
 curl -X POST http://localhost:8090/manufacturer \
 -H 'Content-Type: application/json' \

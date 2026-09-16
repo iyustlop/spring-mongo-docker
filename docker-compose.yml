@@ -1,5 +1,3 @@
-version: "3.8"
-
 networks:
   monitoring:
     driver: bridge
@@ -12,10 +10,20 @@ volumes:
 services:
   mongodb:
     image: mongo:latest
+    container_name: manufacturer_mongo
     ports:
       - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_ROOT_DATABASE=${MONGODB_DATABASE}
     volumes:
       - ./mongodb:/data/db
+    healthcheck:
+      test: ["CMD","mongosh","--eval","db.adminCommand('ping')","--quiet"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   prometheus:
     image: prom/prometheus:latest
     user: 1000:1000
@@ -44,12 +52,16 @@ services:
       - grafana-data:/var/lib/grafana
 
   spring-mongo-demo:
-    image: iyustlop/spring-mongo-demo:0.0.1
+    image: iyustlop/spring-mongo-demo:0.0.2
+    build: .
     container_name: "springboot-mongodb"
     ports:
     - 8090:8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
     environment:
-      - MONGODB_USER=${MONGODB_USER}
+      - MONGODB_USERNAME=${MONGODB_USER}
       - MONGODB_PASSWORD=${MONGODB_PASSWORD}
       - MONGODB_DATABASE=${MONGODB_DATABASE}
     links:

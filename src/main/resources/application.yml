@@ -1,8 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_DATABASE}.rl9sfm1.mongodb.net/?retryWrites=true&w=majority
-      database: elolivar
+      uri: mongodb://iyustlop:pass1234@mongodb:27017/manufacturer?authSource=admin
 management:
   endpoint:
     health:
@@ -11,6 +10,5 @@ management:
     web:
       exposure:
         include: '*'
-
 server:
   port: 8080

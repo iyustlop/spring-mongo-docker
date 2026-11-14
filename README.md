@@ -121,6 +121,8 @@ Servicios y puertos:
 > **Importante:** en el directorio existen `compose.yml` (devcontainer) y `docker-compose.yml` (stack completo). Docker Compose elige `compose.yml` por defecto, así que indica siempre el archivo con `-f docker-compose.yml`.
 >
 > El servicio `spring-mongo-demo` define `MONGODB_USERNAME`, `MONGODB_PASSWORD` y `MONGODB_DATABASE`, pero la aplicación lee la conexión de `application.yml`. Si ejecutas la app dentro de Compose, añade `SPRING_DATA_MONGODB_URI=mongodb://<usuario>:<password>@mongodb:27017/<base-de-datos>?authSource=admin` para que apunte al contenedor `mongodb`.
+>
+> MongoDB está fijado a `mongo:8.2` en ambos compose (y en los `*IT`). `mongo:latest` (26.04) y `8.0` no arrancan en el kernel del VM de Docker Desktop 7.0.x: `MongoDB cannot start: Linux kernel versions 6.19.0 through 7.0.13 have a known incompatibility` ([SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912)).
 
 ### Opción 3: JAR empaquetado
 
@@ -137,9 +139,9 @@ mvn clean package -DskipTests
 
 ### Opción 4: devcontainer
 
-Existe una configuración local de devcontainer en `.devcontainer/devcontainer.json` (no versionada en Git) que usa `compose.yml` y `DockerfileDev`. Desde VS Code se puede abrir con **Dev Containers: Reopen in Container**; al crearse ejecuta `mvn clean install -DskipTests`.
+Existe una configuración local de devcontainer en `.devcontainer/devcontainer.json` que usa `compose.yml` y `DockerfileDev`. Desde VS Code se puede abrir con **Dev Containers: Reopen in Container**; al crearse ejecuta `mvn clean install -DskipTests`.
 
-> `DockerfileDev` está basado en JDK 17, mientras que el proyecto compila con Java 25. Para usar el devcontainer sin errores de compilación hay que actualizar la imagen base a una con JDK 25.
+> `DockerfileDev` usa `maven:3.9.12-eclipse-temurin-25` (JDK 25), coherente con el `pom.xml`. El servicio `app` monta `/var/run/docker.sock`, así que `mvn test` ejecuta también los `*IT` de Testcontainers dentro del contenedor. En Docker Desktop se añade el grupo `0` y `TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal`; en Linux ajusta el GID del grupo `docker` y añade `extra_hosts: ["host.docker.internal:host-gateway"]`.
 
 ## API REST
 
@@ -209,7 +211,7 @@ mvn test -Dtest=ManufacturerIT
 ```
 
 - `ManufacturerControllerTest`: test unitario del controlador con MockMvc y Mockito.
-- `ManufacturerIT`: test de integración de la API REST contra un MongoDB real levantado con Testcontainers (`mongo:7.0`).
+- `ManufacturerIT`: test de integración de la API REST contra un MongoDB real levantado con Testcontainers (`mongo:8.2`).
 - `SpringMongodbDockerApplicationIT`: test de integración del contexto y la persistencia.
 
 Los tests de integración pueden tardar más la primera vez porque descargan la imagen de MongoDB.
@@ -292,3 +294,37 @@ El pipeline requiere la herramienta Maven configurada en Jenkins con el nombre `
 - La compilación requiere JDK 25; otras versiones pueden fallar con Lombok/MapStruct.
 - Solo se implementan los endpoints `GET /manufacturer` y `POST /manufacturer`.
 - Los datos de MongoDB del stack Compose se persisten en `./mongodb`, y los de Prometheus en `./prometheus_data` (ambos ignorados por Git).
+
+## Agente de OpenCode: `backend-engineer`
+
+`.opencode/` define un agente `backend-engineer` (Java, Spring Boot, Docker y Kubernetes) que
+queda seleccionado por defecto gracias a `opencode.json`.
+
+| Archivo | Para qué sirve |
+| --- | --- |
+| `opencode.json` | Selecciona `backend-engineer` como agente por defecto del proyecto. |
+| `.opencode/agents/backend-engineer.md` | System prompt: protocolo de arranque, política de versiones y buenas prácticas. |
+| `.opencode/plugins/stack-version-guard/` | Registra el tool `stack_versions` y avisa al agente en la primera sesión. |
+| `.opencode/commands/stack-check.md` | `/stack-check`: revisión y actualización manual bajo demanda. |
+
+### Revisión automática de versiones
+
+El plugin consulta Maven Central (Spring Boot) y Adoptium (Java), compara con el `pom.xml` y, si
+hay actualizaciones, inyecta el aviso en la primera sesión de nivel superior tras arrancar
+OpenCode. Solo avisa cuando hay algo pendiente.
+
+### Política de actualización
+
+- **Parches de Spring Boot** dentro de la misma línea (`4.1.x`): se aplican automáticamente y se
+  verifican con `mvn clean compile` y `mvn test`.
+- **Minor/major de Spring Boot** y **cambios de Java**: el agente explica el impacto y pide
+  confirmación antes de tocar nada.
+- **Java** se mantiene en la última LTS (25). Las feature releases (26, 27…) solo se avisan.
+
+### Uso
+
+- Para forzar la revisión en cualquier momento: `/stack-check` (equivale a `stack_versions` con
+  `refresh: true`).
+- Para desactivar el aviso automático: `OPENCODE_STACK_AUTOUPDATE=0 opencode`.
+- Tras editar archivos de `.opencode/`, usa `/reload` si el cambio no se aplica en caliente.
+

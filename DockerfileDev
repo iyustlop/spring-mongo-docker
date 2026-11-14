@@ -1,5 +1,5 @@
-# Use a non-Microsoft official Maven image with Java 17 (Eclipse Temurin)
-FROM maven:3.9.6-eclipse-temurin-17
+# Use a non-Microsoft official Maven image with Java 25 (Eclipse Temurin)
+FROM maven:3.9.12-eclipse-temurin-25
 
 # Install git, process tools, lsof for spring-boot-devtools
 # The base image may have some of these, but it's good to be explicit.
@@ -13,13 +13,24 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-# Create the user and add to sudoers
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+# Create the user and add to sudoers. The Temurin base image already ships an
+# `ubuntu` user with UID/GID 1000, so reuse it (and rename) instead of failing.
+RUN apt-get install -y sudo \
+    && if getent group "$USER_GID" >/dev/null; then \
+           groupmod -n "$USERNAME" "$(getent group "$USER_GID" | cut -d: -f1)"; \
+       else \
+           groupadd --gid "$USER_GID" "$USERNAME"; \
+       fi \
+    && if getent passwd "$USER_UID" >/dev/null; then \
+           usermod -l "$USERNAME" -d "/home/$USERNAME" -m "$(getent passwd "$USER_UID" | cut -d: -f1)"; \
+       else \
+           useradd --uid "$USER_UID" --gid "$USER_GID" -m "$USERNAME"; \
+       fi \
+    && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/"$USERNAME" \
+    && chmod 0440 /etc/sudoers.d/"$USERNAME"
+
+# Pre-create the Maven repository so the named volume inherits the right owner
+RUN mkdir -p /home/$USERNAME/.m2 && chown -R $USER_UID:$USER_GID /home/$USERNAME
 
 # Switch to the non-root user
 USER $USERNAME
-

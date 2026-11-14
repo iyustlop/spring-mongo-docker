@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -10,6 +8,13 @@ services:
       - ..:/workspace:cached
       # Persist maven repository to speed up subsequent builds
       - maven-repo:/home/vscode/.m2
+      # Docker daemon access so the Testcontainers *IT suites can run
+      - /var/run/docker.sock:/var/run/docker.sock
+    # En Docker Desktop el socket se monta como root:root, así que hay que
+    # añadir el grupo 0 para que el usuario vscode pueda usarlo. En Linux,
+    # usa el GID del grupo docker del host (p. ej. "999").
+    group_add:
+      - "0"
 
     # Keep the container running
     command: sleep infinity
@@ -26,9 +31,15 @@ services:
     # Set environment variables for the application to connect to mongo
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/testdb
+      # Docker Desktop no expone los puertos publicados en la bridge 172.17.0.1;
+      # Testcontainers (Ryuk y contenedores) se alcanzan por host.docker.internal.
+      # En Linux añade `extra_hosts: ["host.docker.internal:host-gateway"]`.
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
 
   mongodb:
-    image: mongo:latest
+    # Fijado: mongo:latest (26.04) y 8.0 no arrancan en kernels 6.19.0–7.0.13
+    # (SERVER-121912). 8.2 sí; misma versión que usan los *IT.
+    image: mongo:8.2
     ports:
       - '27017:27017'
     volumes:

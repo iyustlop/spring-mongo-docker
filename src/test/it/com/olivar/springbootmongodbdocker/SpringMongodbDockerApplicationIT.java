@@ -22,7 +22,7 @@ class SpringMongodbDockerApplicationIT {
 
     @Container
     @ServiceConnection
-    static MongoDBContainer mongo = new MongoDBContainer("mongo:7.0")
+    static MongoDBContainer mongo = new MongoDBContainer("mongo:8.2")
             .waitingFor(
                     Wait.forSuccessfulCommand("mongosh --quiet --eval \"db.runCommand({ ping: 1 })\"")
                             .withStartupTimeout(Duration.ofSeconds(120))

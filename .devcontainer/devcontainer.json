@@ -9,7 +9,7 @@
         // Configure properties specific to VS Code.
         "vscode": {
             "settings": {
-                "java.jdt.ls.java.home": "/usr/lib/jvm/temurin-17-jdk"
+                "java.jdt.ls.java.home": "/opt/java/openjdk"
             },
             "extensions": [
                 "vscjava.vscode-java-pack",

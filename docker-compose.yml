@@ -9,7 +9,7 @@ volumes:
 
 services:
   mongodb:
-    image: mongo:latest
+    image: mongo:8.2
     container_name: manufacturer_mongo
     ports:
       - '27017:27017'
